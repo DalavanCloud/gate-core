@@ -400,6 +400,19 @@ public class Gate implements GateConstants {
       }
     }
 
+    File mavenPluginsList = new File(new File(System.getProperty("user.home")), ".mavenPlugins");
+
+    if (mavenPluginsList.exists()) {
+      try {
+        java.nio.file.Files.lines(mavenPluginsList.toPath()).forEach(mavenPlugin -> {
+                  addKnownPlugin(Plugin.Maven.fromName(mavenPlugin));
+                }
+        );
+      } catch (IOException e) {
+        throw new GateRuntimeException(e);
+      }
+    }
+
     // process the autoload plugins
     String pluginPath = getUserConfig().getString(AUTOLOAD_PLUGIN_PATH_KEY);
     // can be overridden by system property
